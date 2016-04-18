@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    setWindowTitle("Packet Sender");
+    setWindowTitle("Packet Sender - SSL Edition");
     setWindowIcon(mIcon);
 
     tableActive = false;
@@ -107,8 +107,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     packetNetwork.responseData = settings.value("responseHex","").toString();
 
-    ui->persistentTCPCheck->setChecked(settings.value("persistentTCPCheck", false).toBool());
+    ui->persistentTCPCheck->setChecked(false);
     packetNetwork.persistentConnectCheck = ui->persistentTCPCheck->isChecked();
+    ui->persistentTCPCheck->hide();
 
 
 

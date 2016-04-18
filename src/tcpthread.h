@@ -12,6 +12,7 @@
 
 #include <QThread>
 #include <QTcpSocket>
+#include <QSslSocket>
 #include "packet.h"
 
 class TCPThread : public QThread
@@ -50,7 +51,7 @@ private:
     Packet sendPacketPersistent;
     void init();
     void writeResponse(QTcpSocket *sock, Packet tcpPacket);
-    QTcpSocket * clientConnection;
+    QSslSocket * clientConnection;
 
     void persistentConnectionLoop();
 };

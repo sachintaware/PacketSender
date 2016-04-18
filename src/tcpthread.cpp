@@ -16,6 +16,8 @@
 #include <QSettings>
 #include <QDesktopServices>
 #include <QDir>
+#include <QSsl>
+#include <QSslSocket>
 
 TCPThread::TCPThread(int socketDescriptor, QObject *parent)
     : QThread(parent), socketDescriptor(socketDescriptor)
@@ -287,7 +289,10 @@ void TCPThread::run()
 
     if(sendFlag) {
         QDEBUG() << "We are threaded sending!";
-        clientConnection = new QTcpSocket(this);
+        clientConnection = new QSslSocket(this);
+
+
+
 
         sendPacket.fromIP = "You";
         sendPacket.timestamp = QDateTime::currentDateTime();
@@ -301,13 +306,20 @@ void TCPThread::run()
 
 
         if(ipMode > 4) {
-            clientConnection->connectToHost(sendPacket.toIP,  sendPacket.port, QIODevice::ReadWrite, QAbstractSocket::IPv6Protocol);
+            clientConnection->connectToHostEncrypted(sendPacket.toIP,  sendPacket.port, QIODevice::ReadWrite, QAbstractSocket::IPv6Protocol);
 
         } else {
-            clientConnection->connectToHost(sendPacket.toIP,  sendPacket.port, QIODevice::ReadWrite, QAbstractSocket::IPv4Protocol);
+            clientConnection->connectToHostEncrypted(sendPacket.toIP,  sendPacket.port, QIODevice::ReadWrite, QAbstractSocket::IPv4Protocol);
 
         }
-        clientConnection->waitForConnected(5000);
+
+        QDEBUG() << "Telling SSL to ignore errors";
+        clientConnection->ignoreSslErrors();
+        QDEBUG() << "Connecting to" << sendPacket.toIP <<":" << sendPacket.port;
+        QDEBUG() << "Wait for connected finished" << clientConnection->waitForConnected(5000);
+        QDEBUG() << "Wait for encrypted finished" << clientConnection->waitForEncrypted(5000);
+
+        QDEBUG() << "isEncrypted" << clientConnection->isEncrypted();
 
 
         if(sendPacket.delayAfterConnect > 0) {
@@ -387,7 +399,7 @@ void TCPThread::run()
     emit packetSent(tcpPacket);
     writeResponse(&sock, tcpPacket);
 
-
+/*
 
     if(incomingPersistent) {
         clientConnection = &sock;
@@ -397,7 +409,7 @@ void TCPThread::run()
         sendPacket.hexString.clear();
         persistentConnectionLoop();
     }
-
+*/
 
 
 /*

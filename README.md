@@ -186,7 +186,8 @@ If you are feeling adventurous, feel free to build from the master branch. It co
 ```
 sudo apt-get update
 sudo apt-get install qt5-default build-essential
-wget https://github.com/dannagle/PacketSender/archive/(Version).tar.gz
+wget https://github.com/dannagle/PacketSender/archive/(Version).tar.gz  
+//eg.: wget https://github.com/dannagle/PacketSender/archive/v5.1.tar.gz     5.1 is the latest version
 tar -xzvf (Version).tar.gz
 cd PacketSender-(Version)/src
 qmake
